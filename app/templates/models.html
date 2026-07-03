@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Model Comparison — NetShield IDS{% endblock %}
+
+{% block content %}
+<section class="page-header" aria-label="Page title">
+    <h2 class="page-title">Model <span class="gradient-text">Comparison</span></h2>
+    <p class="page-subtitle">Performance analysis across Random Forest, XGBoost, and LSTM classifiers</p>
+</section>
+
+<section class="comparison-section" aria-label="Model comparison table">
+    <article class="glass-card" id="comparison-card">
+        <div class="panel-header">
+            <h3 class="panel-title">Overall Performance Metrics</h3>
+        </div>
+        <div class="table-wrapper">
+            <table class="data-table" id="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Accuracy</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1 Score</th>
+                        <th>Training Time (s)</th>
+                    </tr>
+                </thead>
+                <tbody id="comparison-tbody">
+                    <tr>
+                        <td colspan="6" class="loading-cell">Loading metrics…</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+
+<section class="charts-row" aria-label="Model charts">
+    <article class="glass-card" id="radar-card">
+        <div class="panel-header">
+            <h3 class="panel-title">Metric Comparison Radar</h3>
+        </div>
+        <div class="chart-container radar-container">
+            <canvas id="radarChart"></canvas>
+        </div>
+    </article>
+
+    <article class="glass-card" id="training-time-card">
+        <div class="panel-header">
+            <h3 class="panel-title">Training Time</h3>
+        </div>
+        <div class="chart-container bar-container">
+            <canvas id="trainingTimeChart"></canvas>
+        </div>
+    </article>
+</section>
+
+<section class="per-class-section" aria-label="Per-class performance">
+    <article class="glass-card" id="per-class-card">
+        <div class="panel-header">
+            <h3 class="panel-title">Per-Class F1 Scores</h3>
+            <span class="panel-badge">By attack category</span>
+        </div>
+        <div class="chart-container per-class-container">
+            <canvas id="perClassChart"></canvas>
+        </div>
+    </article>
+</section>
+{% endblock %}

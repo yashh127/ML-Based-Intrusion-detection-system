@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Alerts — NetShield IDS{% endblock %}
+
+{% block content %}
+<section class="page-header" aria-label="Page title">
+    <h2 class="page-title">Alert <span class="gradient-text">History</span></h2>
+    <p class="page-subtitle">Detected threats and suspicious activity log</p>
+</section>
+
+<section class="filter-section" aria-label="Alert filters">
+    <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn active" data-filter="all" id="filter-all">
+            <span class="filter-dot dot-all"></span>All
+        </button>
+        <button class="filter-btn" data-filter="DoS" id="filter-dos">
+            <span class="filter-dot dot-dos"></span>DoS
+        </button>
+        <button class="filter-btn" data-filter="Probe" id="filter-probe">
+            <span class="filter-dot dot-probe"></span>Probe
+        </button>
+        <button class="filter-btn" data-filter="R2L" id="filter-r2l">
+            <span class="filter-dot dot-r2l"></span>R2L
+        </button>
+        <button class="filter-btn" data-filter="U2R" id="filter-u2r">
+            <span class="filter-dot dot-u2r"></span>U2R
+        </button>
+    </div>
+</section>
+
+<section class="alerts-section" aria-label="Alert table">
+    <article class="glass-card" id="alerts-card">
+        <div class="panel-header">
+            <h3 class="panel-title">Threat Log</h3>
+            <span class="panel-badge" id="alerts-count">0 threats</span>
+        </div>
+        <div class="table-wrapper">
+            <table class="data-table" id="alerts-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Source IP</th>
+                        <th>Dest IP</th>
+                        <th>Protocol</th>
+                        <th>Attack Type</th>
+                        <th>Confidence</th>
+                        <th>Model</th>
+                    </tr>
+                </thead>
+                <tbody id="alerts-tbody">
+                </tbody>
+            </table>
+        </div>
+        <div class="empty-state" id="alerts-empty-state">
+            <div class="empty-icon">🛡️</div>
+            <h4>No threats detected yet</h4>
+            <p>The system is monitoring traffic. Detected threats will appear here.</p>
+        </div>
+    </article>
+</section>
+{% endblock %}

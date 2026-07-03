@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NetShield IDS — Real-time Intrusion Detection System Dashboard">
+    <title>{% block title %}NetShield IDS{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="sidebar" aria-label="Main navigation">
+        <div class="sidebar-brand">
+            <span class="brand-icon">🛡</span>
+            <span class="brand-text">NetShield</span>
+        </div>
+
+        <ul class="nav-list">
+            <li>
+                <a href="{{ url_for('main.dashboard') }}" class="nav-item{% if request.path == '/' %} active{% endif %}" id="nav-dashboard">
+                    <span class="nav-icon">◉</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.models') }}" class="nav-item{% if request.path == '/models' %} active{% endif %}" id="nav-models">
+                    <span class="nav-icon">◫</span>
+                    <span class="nav-label">Models</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.alerts') }}" class="nav-item{% if request.path == '/alerts' %} active{% endif %}" id="nav-alerts">
+                    <span class="nav-icon">⚠</span>
+                    <span class="nav-label">Alerts</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-version">v2.0.0</div>
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle navigation">☰</button>
+                <h1 class="header-brand">NetShield <span class="header-brand-accent">IDS</span></h1>
+            </div>
+            <div class="header-right">
+                <div class="live-indicator" id="live-indicator">
+                    <span class="live-dot"></span>
+                    <span class="live-text">LIVE</span>
+                </div>
+                <div class="header-timestamp" id="header-timestamp"></div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

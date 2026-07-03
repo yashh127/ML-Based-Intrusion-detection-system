@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — NetShield IDS{% endblock %}
+
+{% block content %}
+<section class="page-header" aria-label="Page title">
+    <h2 class="page-title">Real-Time <span class="gradient-text">Monitoring</span></h2>
+    <p class="page-subtitle">Network traffic analysis and threat detection</p>
+</section>
+
+<section class="stats-grid" aria-label="Key metrics">
+    <article class="glass-card stat-card" id="card-total-connections">
+        <div class="stat-icon stat-icon-connections">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="16"/>
+                <circle cx="6" cy="19" r="3"/><line x1="12" y1="16" x2="6" y2="16"/>
+                <circle cx="18" cy="19" r="3"/><line x1="12" y1="16" x2="18" y2="16"/>
+            </svg>
+        </div>
+        <div class="stat-content">
+            <span class="stat-label">Total Connections</span>
+            <span id="stat-total" class="stat-value">0</span>
+        </div>
+    </article>
+
+    <article class="glass-card stat-card" id="card-threats-detected">
+        <div class="stat-icon stat-icon-threats">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+        </div>
+        <div class="stat-content">
+            <span class="stat-label">Threats Detected</span>
+            <span id="stat-threats" class="stat-value threat">0</span>
+        </div>
+    </article>
+
+    <article class="glass-card stat-card" id="card-detection-rate">
+        <div class="stat-icon stat-icon-rate">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+        </div>
+        <div class="stat-content">
+            <span class="stat-label">Detection Rate</span>
+            <span id="stat-rate" class="stat-value">0%</span>
+            <div class="mini-gauge" id="mini-gauge">
+                <svg viewBox="0 0 36 36" class="gauge-svg">
+                    <path class="gauge-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(0,212,255,0.15)" stroke-width="3"/>
+                    <path class="gauge-fill" id="gauge-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#00d4ff" stroke-width="3" stroke-dasharray="0, 100"/>
+                </svg>
+            </div>
+        </div>
+    </article>
+
+    <article class="glass-card stat-card" id="card-best-model">
+        <div class="stat-icon stat-icon-model">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+        </div>
+        <div class="stat-content">
+            <span class="stat-label">Best Model</span>
+            <span id="stat-model" class="stat-value">XGBoost</span>
+            <span class="stat-sub" id="stat-model-accuracy">98.3% accuracy</span>
+        </div>
+    </article>
+</section>
+
+<section class="monitor-grid" aria-label="Monitoring panels">
+    <article class="glass-card traffic-panel" id="traffic-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">
+                <span class="live-dot small"></span>
+                Real-Time Traffic Feed
+            </h3>
+            <span class="panel-badge" id="feed-count">0 events</span>
+        </div>
+        <div class="traffic-feed" id="traffic-feed">
+            <div class="feed-empty" id="feed-empty-state">
+                <div class="feed-empty-icon">📡</div>
+                <p>Waiting for traffic data…</p>
+                <p class="feed-empty-sub">Connect to the live feed to see real-time network analysis</p>
+            </div>
+        </div>
+    </article>
+
+    <article class="glass-card chart-panel" id="attack-dist-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">Attack Distribution</h3>
+        </div>
+        <div class="chart-container donut-container">
+            <canvas id="attackDistChart"></canvas>
+        </div>
+        <div class="chart-legend" id="attack-legend"></div>
+    </article>
+</section>
+
+<section class="timeline-section" aria-label="Traffic timeline">
+    <article class="glass-card timeline-panel" id="timeline-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">Traffic Timeline</h3>
+            <span class="panel-badge">Last 60 events</span>
+        </div>
+        <div class="chart-container timeline-container">
+            <canvas id="timelineChart"></canvas>
+        </div>
+    </article>
+</section>
+{% endblock %}

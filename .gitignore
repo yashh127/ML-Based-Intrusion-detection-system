@@ -1,0 +1,21 @@
+# Virtual environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Trained models (too large for GitHub)
+models/saved/*.joblib
+models/saved/*.h5
+
+# Processed data
+data/processed/*.pkl
+
+# Raw data (users download themselves)
+data/raw/*.txt
+data/raw/*.csv
+
+# OS files
+.DS_Store
