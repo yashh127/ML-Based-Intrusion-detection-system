@@ -21,11 +21,20 @@ A production-grade intrusion detection system powered by **Random Forest** & **X
 
 ## 🎬 Dashboard Preview
 
-> 💡 **To add your own screenshots:** Take a screenshot of each page, save them in a `screenshots/` folder, and replace the paths below.
+### 📊 Real-Time Monitoring Dashboard
+> Live traffic feed with attack detection, stat cards, donut chart, and toast notifications
 
-| Dashboard | Models | Alerts |
-|:---------:|:------:|:------:|
-| Real-time traffic feed with live attack detection | Model comparison with radar & bar charts | Filterable threat log with confidence scores |
+![Dashboard](screenshots/dashboard.png)
+
+### 🧠 Model Comparison
+> Side-by-side performance metrics, radar chart, and training time comparison
+
+![Models](screenshots/models.png)
+
+### 🚨 Alert History
+> Filterable threat log with attack type badges, confidence bars, and CSV export
+
+![Alerts](screenshots/alerts.png)
 
 ---
 
