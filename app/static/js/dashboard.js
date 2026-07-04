@@ -3,6 +3,51 @@
    Chart.js configuration, SSE real-time feed, counters
    ========================================================= */
 
+/* --- Theme Toggle --- */
+function initThemeToggle() {
+    const saved = localStorage.getItem('ids-theme') || 'dark';
+    applyTheme(saved);
+
+    const btn = document.getElementById('theme-toggle');
+    if (btn) {
+        btn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            applyTheme(next);
+            localStorage.setItem('ids-theme', next);
+        });
+    }
+}
+
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+
+    const icon = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon) icon.textContent = theme === 'light' ? '☀️' : '🌙';
+    if (label) label.textContent = theme === 'light' ? 'Light' : 'Dark';
+
+    /* Update Chart.js defaults for the new theme */
+    if (typeof Chart !== 'undefined') {
+        const textColor = theme === 'light' ? '#475569' : '#94a3b8';
+        const gridColor = theme === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.04)';
+        Chart.defaults.color = textColor;
+        Chart.defaults.borderColor = gridColor;
+    }
+}
+
+/* Apply theme immediately to prevent flash */
+(function() {
+    const saved = localStorage.getItem('ids-theme') || 'dark';
+    if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+})();
+
 /* --- Color Constants --- */
 const COLORS = {
     cyan: '#00d4ff',
@@ -265,6 +310,10 @@ function connectSSE() {
         try {
             const data = JSON.parse(event.data);
             handleNewTraffic(data);
+            /* Trigger toast for attacks */
+            if (window.triggerAttackToast) {
+                window.triggerAttackToast(data);
+            }
         } catch (e) {
             console.error('SSE parse error:', e);
         }
@@ -705,6 +754,7 @@ function initMobileMenu() {
    ========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
+    initThemeToggle();
 
     const path = window.location.pathname;
     if (path === '/' || path === '') {
@@ -714,4 +764,338 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (path === '/alerts') {
         initAlertsPage();
     }
+
+    /* Initialize futuristic effects */
+    initParticleNetwork();
 });
+
+/* =========================================================
+   Particle Network Background
+   ========================================================= */
+function initParticleNetwork() {
+    const canvas = document.getElementById('particle-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animId;
+    const MAX_PARTICLES = 60;
+    const CONNECT_DIST = 150;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.vx = (Math.random() - 0.5) * 0.6;
+            this.vy = (Math.random() - 0.5) * 0.6;
+            this.radius = Math.random() * 2 + 1;
+            this.opacity = Math.random() * 0.5 + 0.2;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+
+            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        }
+
+        draw() {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            const color = isLight ? '8, 145, 178' : '0, 212, 255';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${color}, ${this.opacity})`;
+            ctx.fill();
+        }
+    }
+
+    // Create particles
+    for (let i = 0; i < MAX_PARTICLES; i++) {
+        particles.push(new Particle());
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const lineColor = isLight ? '8, 145, 178' : '0, 212, 255';
+
+        // Draw connections
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < CONNECT_DIST) {
+                    const opacity = (1 - dist / CONNECT_DIST) * 0.15;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(${lineColor}, ${opacity})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Update and draw particles
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+
+        animId = requestAnimationFrame(animate);
+    }
+
+    animate();
+}
+
+/* =========================================================
+   Toast Notification System
+   ========================================================= */
+function showToast(title, message, type = 'danger') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const icons = {
+        danger: '🚨',
+        warning: '⚠️',
+        success: '✅',
+        info: 'ℹ️',
+    };
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.style.borderLeftColor = type === 'danger' ? 'var(--accent-danger)'
+        : type === 'warning' ? 'var(--accent-warning)'
+        : type === 'success' ? 'var(--accent-success)'
+        : 'var(--accent-cyan)';
+
+    toast.innerHTML = `
+        <span class="toast-icon">${icons[type] || '🔔'}</span>
+        <div class="toast-body">
+            <div class="toast-title">${title}</div>
+            <div class="toast-msg">${message}</div>
+        </div>
+        <button class="toast-close" onclick="dismissToast(this)">✕</button>
+    `;
+
+    container.appendChild(toast);
+
+    // Auto-dismiss after 4 seconds
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.classList.add('toast-out');
+            setTimeout(() => toast.remove(), 400);
+        }
+    }, 4000);
+
+    // Keep max 3 toasts
+    while (container.children.length > 3) {
+        container.firstChild.remove();
+    }
+}
+
+function dismissToast(btn) {
+    const toast = btn.closest('.toast');
+    toast.classList.add('toast-out');
+    setTimeout(() => toast.remove(), 400);
+}
+
+/* Hook toast into the traffic feed — show alerts for attacks */
+const _origAddTrafficEntry = typeof addTrafficEntry === 'function' ? addTrafficEntry : null;
+if (_origAddTrafficEntry) {
+    const originalAdd = addTrafficEntry;
+    // We'll patch this from the SSE handler instead
+}
+
+/* Patch SSE to trigger toasts on attacks */
+(function() {
+    const origES = window.EventSource;
+    if (!origES) return;
+
+    const _origAddEvent = EventSource.prototype.addEventListener;
+    // Instead, we'll use a global hook
+    window._toastAttackCount = 0;
+    window._lastToastTime = 0;
+
+    window.triggerAttackToast = function(data) {
+        const now = Date.now();
+        // Only show toast every 8 seconds max to avoid spam
+        if (now - window._lastToastTime < 8000) return;
+        window._lastToastTime = now;
+
+        if (data.attack_type && data.attack_type !== 'Normal') {
+            const typeMap = { DoS: 'danger', Probe: 'warning', R2L: 'danger', U2R: 'danger' };
+            showToast(
+                `${data.attack_type} Attack Detected`,
+                `${data.src_ip} → ${data.dst_ip} via ${data.protocol} (${Math.round(data.confidence * 100)}% confidence)`,
+                typeMap[data.attack_type] || 'warning'
+            );
+        }
+    };
+})();
+
+/* =========================================================
+   Enhanced Features v2.1
+   ========================================================= */
+
+/* --- Keyboard Shortcuts --- */
+(function initKeyboardShortcuts() {
+    const overlay = document.getElementById('shortcuts-overlay');
+    const closeBtn = document.getElementById('shortcuts-close');
+    const hintBtn = document.getElementById('shortcut-hint-btn');
+
+    function toggleShortcuts(show) {
+        if (overlay) overlay.classList.toggle('active', show);
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleShortcuts(false));
+    if (hintBtn) hintBtn.addEventListener('click', () => toggleShortcuts(true));
+    if (overlay) overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) toggleShortcuts(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        // Don't trigger in inputs
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        switch (e.key) {
+            case '1': window.location.href = '/'; break;
+            case '2': window.location.href = '/models'; break;
+            case '3': window.location.href = '/alerts'; break;
+            case 't':
+            case 'T':
+                document.getElementById('theme-toggle')?.click();
+                break;
+            case '?':
+                toggleShortcuts(true);
+                break;
+            case 'Escape':
+                toggleShortcuts(false);
+                break;
+        }
+    });
+})();
+
+/* --- Live Clock --- */
+(function initLiveClock() {
+    const clockEl = document.getElementById('header-clock');
+    if (!clockEl) return;
+
+    function updateClock() {
+        const now = new Date();
+        clockEl.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+})();
+
+/* --- Uptime Counter --- */
+(function initUptime() {
+    const el = document.getElementById('uptime-counter');
+    if (!el) return;
+
+    const startTime = Date.now();
+
+    function updateUptime() {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+        const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+        const s = String(elapsed % 60).padStart(2, '0');
+        el.textContent = `${h}:${m}:${s}`;
+    }
+
+    setInterval(updateUptime, 1000);
+})();
+
+/* --- 3D Holographic Tilt on Stat Cards --- */
+(function initHoloTilt() {
+    document.querySelectorAll('.stats-grid .glass-card').forEach(card => {
+        card.classList.add('holo-tilt');
+
+        // Add shine overlay
+        const shine = document.createElement('div');
+        shine.className = 'holo-shine';
+        card.appendChild(shine);
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+            const rotateX = ((y - 50) / 50) * -6;
+            const rotateY = ((x - 50) / 50) * 6;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            card.style.setProperty('--mouse-x', x + '%');
+            card.style.setProperty('--mouse-y', y + '%');
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        });
+    });
+})();
+
+/* --- Status Bar Live Updates --- */
+(function initStatusBar() {
+    let ppsCounter = 0;
+    let threatCounter = 0;
+
+    const ppsEl = document.getElementById('status-pps');
+    const threatsEl = document.getElementById('status-threats');
+
+    // Hook into traffic feed to update counters
+    const origHandle = window.handleNewTraffic;
+    if (typeof origHandle === 'function') {
+        window.handleNewTraffic = function(data) {
+            origHandle(data);
+            ppsCounter++;
+            if (data.prediction !== 'Normal' && data.attack_type !== 'Normal') {
+                threatCounter++;
+            }
+            if (threatsEl) threatsEl.textContent = threatCounter;
+        };
+    }
+
+    // Update PPS every second
+    setInterval(() => {
+        if (ppsEl) ppsEl.textContent = ppsCounter;
+        ppsCounter = 0;
+    }, 1000);
+})();
+
+/* --- Typing Animation on Page Titles --- */
+(function initTypingEffect() {
+    const title = document.querySelector('.page-title');
+    if (!title) return;
+
+    const text = title.textContent;
+    title.textContent = '';
+    title.classList.add('typing-cursor');
+
+    let i = 0;
+    function typeChar() {
+        if (i < text.length) {
+            title.textContent += text[i];
+            i++;
+            setTimeout(typeChar, 50 + Math.random() * 30);
+        } else {
+            // Remove cursor after typing is done
+            setTimeout(() => title.classList.remove('typing-cursor'), 1500);
+        }
+    }
+
+    setTimeout(typeChar, 300);
+})();

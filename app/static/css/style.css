@@ -36,6 +36,66 @@
     --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 }
 
+/* --- Light Mode --- */
+[data-theme="light"] {
+    --bg-primary: #f0f4f8;
+    --bg-secondary: #ffffff;
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --bg-card-hover: rgba(240, 245, 255, 0.95);
+    --accent-cyan: #0891b2;
+    --accent-purple: #7c3aed;
+    --accent-danger: #e11d48;
+    --accent-success: #059669;
+    --accent-warning: #d97706;
+    --accent-info: #0284c7;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border-color: rgba(8, 145, 178, 0.2);
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --glow-cyan: 0 0 20px rgba(8, 145, 178, 0.1);
+    --glow-danger: 0 0 20px rgba(225, 29, 72, 0.1);
+    --glow-success: 0 0 20px rgba(5, 150, 105, 0.1);
+    --glass-blur: blur(12px);
+}
+
+/* --- Theme Toggle Button --- */
+.theme-toggle {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    padding: 6px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-family: var(--font-sans);
+    transition: var(--transition);
+    backdrop-filter: var(--glass-blur);
+    margin-right: 12px;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: var(--glow-cyan);
+    transform: scale(1.05);
+}
+
+.theme-toggle .theme-icon {
+    font-size: 1.1rem;
+    transition: transform 0.4s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+    transform: rotate(30deg);
+}
+
+.theme-toggle .theme-label {
+    font-weight: 500;
+}
+
 /* --- Reset & Base --- */
 *, *::before, *::after {
     margin: 0;
@@ -1078,4 +1138,708 @@ ul {
 
 .sidebar-overlay.active {
     display: block;
+}
+
+/* =========================================================
+   Futuristic Effects
+   ========================================================= */
+
+/* --- Particle Canvas Background --- */
+#particle-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+[data-theme="light"] #particle-canvas {
+    opacity: 0.25;
+}
+
+/* --- Scan Line Overlay --- */
+.scan-line {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+    z-index: 9999;
+    pointer-events: none;
+    animation: scanLine 4s linear infinite;
+    opacity: 0.5;
+    box-shadow: 0 0 15px var(--accent-cyan), 0 0 30px var(--accent-cyan);
+}
+
+@keyframes scanLine {
+    0% { top: -3px; opacity: 0; }
+    5% { opacity: 0.5; }
+    95% { opacity: 0.5; }
+    100% { top: 100vh; opacity: 0; }
+}
+
+/* --- Glitch Text Effect --- */
+.glitch {
+    position: relative;
+    display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.glitch::before {
+    color: var(--accent-cyan);
+    animation: glitch-1 3s infinite linear alternate-reverse;
+    clip-path: inset(0 0 80% 0);
+}
+
+.glitch::after {
+    color: var(--accent-danger);
+    animation: glitch-2 3s infinite linear alternate-reverse;
+    clip-path: inset(80% 0 0 0);
+}
+
+@keyframes glitch-1 {
+    0%, 90%, 100% { transform: translate(0); }
+    92% { transform: translate(-3px, 1px); }
+    94% { transform: translate(3px, -1px); }
+    96% { transform: translate(-2px, 2px); }
+    98% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-2 {
+    0%, 90%, 100% { transform: translate(0); }
+    91% { transform: translate(3px, 2px); }
+    93% { transform: translate(-3px, -1px); }
+    95% { transform: translate(2px, 1px); }
+    97% { transform: translate(-2px, -2px); }
+}
+
+/* --- Animated Gradient Borders on Cards --- */
+.glass-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        var(--accent-cyan),
+        transparent,
+        var(--accent-purple),
+        transparent
+    );
+    background-size: 400% 400%;
+    z-index: -1;
+    border-radius: inherit;
+    animation: borderGlow 6s ease infinite;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.glass-card:hover::before {
+    opacity: 1;
+}
+
+@keyframes borderGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- Neon Pulse on Stat Values --- */
+.stat-value {
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    animation: neonPulse 3s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+    0%, 100% { text-shadow: 0 0 10px rgba(0, 212, 255, 0.2); }
+    50% { text-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 0 40px rgba(0, 212, 255, 0.2); }
+}
+
+.stat-value.threat {
+    animation: neonDanger 2s ease-in-out infinite;
+}
+
+@keyframes neonDanger {
+    0%, 100% { text-shadow: 0 0 10px rgba(255, 51, 102, 0.2); }
+    50% { text-shadow: 0 0 20px rgba(255, 51, 102, 0.6), 0 0 40px rgba(255, 51, 102, 0.3); }
+}
+
+[data-theme="light"] .stat-value {
+    text-shadow: none;
+    animation: none;
+}
+
+/* --- Staggered Entrance Animations --- */
+.glass-card {
+    animation: cardEntrance 0.6s ease-out backwards;
+}
+
+.stats-grid .glass-card:nth-child(1) { animation-delay: 0.05s; }
+.stats-grid .glass-card:nth-child(2) { animation-delay: 0.1s; }
+.stats-grid .glass-card:nth-child(3) { animation-delay: 0.15s; }
+.stats-grid .glass-card:nth-child(4) { animation-delay: 0.2s; }
+
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        filter: blur(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* --- Threat Level Gauge --- */
+.threat-gauge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+}
+
+.gauge-ring {
+    width: 52px;
+    height: 52px;
+    position: relative;
+}
+
+.gauge-ring svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.gauge-ring .gauge-bg {
+    fill: none;
+    stroke: var(--border-color);
+    stroke-width: 4;
+}
+
+.gauge-ring .gauge-fill {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease, stroke 0.5s ease;
+}
+
+.gauge-label {
+    display: flex;
+    flex-direction: column;
+}
+
+.gauge-percent {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.gauge-text {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- Toast Notifications --- */
+.toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--bg-card);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 300px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: toastIn 0.5s ease forwards;
+    pointer-events: auto;
+    border-left: 3px solid var(--accent-danger);
+}
+
+.toast.toast-out {
+    animation: toastOut 0.4s ease forwards;
+}
+
+.toast-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.toast-body {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.toast-msg {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.toast-close:hover {
+    color: var(--text-primary);
+}
+
+@keyframes toastIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(120%); opacity: 0; }
+}
+
+/* --- HUD-style corner brackets on section headers --- */
+.section-header {
+    position: relative;
+    padding-left: 16px;
+}
+
+.section-header::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 6px;
+    height: 100%;
+    border-left: 2px solid var(--accent-cyan);
+    border-top: 2px solid var(--accent-cyan);
+    border-bottom: 2px solid var(--accent-cyan);
+    border-right: none;
+    border-radius: 2px 0 0 2px;
+}
+
+/* --- Improved Traffic Entry Hover --- */
+.traffic-entry {
+    transition: all 0.3s ease;
+}
+
+.traffic-entry:hover {
+    transform: translateX(8px) scale(1.01);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.traffic-entry.attack:hover {
+    box-shadow: 0 4px 20px rgba(255, 51, 102, 0.15);
+}
+
+/* --- Data Table Row Glow --- */
+.data-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+    background: var(--bg-card-hover);
+    box-shadow: inset 3px 0 0 var(--accent-cyan);
+}
+
+/* --- Cyberpunk Corner Decorations on Main Cards --- */
+.monitor-grid > .glass-card::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border-top: 2px solid var(--accent-cyan);
+    border-right: 2px solid var(--accent-cyan);
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.monitor-grid > .glass-card:hover::after {
+    opacity: 0.8;
+}
+
+/* --- Smooth Theme Transition --- */
+html {
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+body,
+.sidebar,
+.top-header,
+.glass-card,
+.nav-item,
+.theme-toggle,
+.badge,
+.stat-value,
+.data-table {
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* =========================================================
+   Enhanced Features v2.1
+   ========================================================= */
+
+/* --- System Status Bar --- */
+.status-bar {
+    position: fixed;
+    bottom: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    height: 28px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 20px;
+    z-index: 100;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-success);
+    box-shadow: 0 0 6px var(--accent-success);
+    animation: statusBlink 2s ease-in-out infinite;
+}
+
+.status-dot.online { background: var(--accent-success); }
+
+@keyframes statusBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.status-label {
+    color: var(--text-muted);
+}
+
+.status-value {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.status-danger { color: var(--accent-danger); }
+.status-success { color: var(--accent-success); }
+
+.status-right {
+    margin-left: auto;
+    opacity: 0.5;
+}
+
+/* --- Radar Ping on LIVE Indicator --- */
+.live-indicator {
+    position: relative;
+}
+
+.radar-ping {
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-success);
+    animation: radarPing 2s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes radarPing {
+    0% { transform: translate(-50%, -50%) scale(0.3); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+/* --- PRO Badge --- */
+.brand-badge {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    margin-left: 6px;
+    text-transform: uppercase;
+}
+
+/* --- Nav Shortcut Keys --- */
+.nav-shortcut {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-item:hover .nav-shortcut {
+    opacity: 1;
+}
+
+/* --- Sidebar Stats --- */
+.sidebar-stats {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-stat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.sidebar-stat-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+.sidebar-stat-dot.online {
+    background: var(--accent-success);
+    box-shadow: 0 0 8px var(--accent-success);
+    animation: statusBlink 2s ease-in-out infinite;
+}
+
+.sidebar-stat-label {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+.sidebar-stat-value {
+    font-family: var(--font-mono);
+    color: var(--accent-cyan);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.shortcut-hint {
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.2s;
+    font-size: 0.65rem;
+}
+
+.shortcut-hint:hover {
+    color: var(--accent-cyan);
+}
+
+/* --- Live Clock --- */
+.header-clock {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent-cyan);
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: rgba(0, 212, 255, 0.05);
+}
+
+/* --- Keyboard Shortcuts Overlay --- */
+.shortcuts-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 20000;
+    align-items: center;
+    justify-content: center;
+}
+
+.shortcuts-overlay.active {
+    display: flex;
+}
+
+.shortcuts-modal {
+    max-width: 420px;
+    width: 90%;
+    padding: 28px;
+    animation: cardEntrance 0.3s ease;
+}
+
+.shortcuts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.shortcuts-header h3 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.shortcuts-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.shortcuts-close:hover {
+    color: var(--text-primary);
+    background: var(--bg-card-hover);
+}
+
+.shortcuts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.shortcut-item kbd {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-cyan);
+    min-width: 32px;
+    text-align: center;
+    box-shadow: 0 2px 0 var(--border-color);
+}
+
+.shortcut-item span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* --- 3D Holographic Tilt --- */
+.glass-card.holo-tilt {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.glass-card.holo-tilt .holo-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(0, 212, 255, 0.08) 0%,
+        transparent 60%
+    );
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.glass-card.holo-tilt:hover .holo-shine {
+    opacity: 1;
+}
+
+/* --- Typing Cursor --- */
+.typing-cursor::after {
+    content: '|';
+    animation: blink 1s step-end infinite;
+    color: var(--accent-cyan);
+    font-weight: 300;
+    margin-left: 2px;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* --- Status Bar Responsive --- */
+@media (max-width: 1024px) {
+    .status-bar {
+        left: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .status-bar {
+        display: none;
+    }
+}
+
+/* Adjust main content for status bar */
+.main-content {
+    padding-bottom: 48px;
 }

@@ -12,10 +12,34 @@
 </head>
 <body>
 
+    <!-- Futuristic Effects -->
+    <canvas id="particle-canvas"></canvas>
+    <div class="scan-line"></div>
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Keyboard Shortcuts Overlay -->
+    <div class="shortcuts-overlay" id="shortcuts-overlay">
+        <div class="shortcuts-modal glass-card">
+            <div class="shortcuts-header">
+                <h3>⌨️ Keyboard Shortcuts</h3>
+                <button class="shortcuts-close" id="shortcuts-close">✕</button>
+            </div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item"><kbd>1</kbd><span>Dashboard</span></div>
+                <div class="shortcut-item"><kbd>2</kbd><span>Models</span></div>
+                <div class="shortcut-item"><kbd>3</kbd><span>Alerts</span></div>
+                <div class="shortcut-item"><kbd>T</kbd><span>Toggle Theme</span></div>
+                <div class="shortcut-item"><kbd>?</kbd><span>Show Shortcuts</span></div>
+                <div class="shortcut-item"><kbd>Esc</kbd><span>Close Overlay</span></div>
+            </div>
+        </div>
+    </div>
+
     <nav class="sidebar" aria-label="Main navigation">
         <div class="sidebar-brand">
             <span class="brand-icon">🛡</span>
             <span class="brand-text">NetShield</span>
+            <span class="brand-badge">PRO</span>
         </div>
 
         <ul class="nav-list">
@@ -23,24 +47,37 @@
                 <a href="{{ url_for('main.dashboard') }}" class="nav-item{% if request.path == '/' %} active{% endif %}" id="nav-dashboard">
                     <span class="nav-icon">◉</span>
                     <span class="nav-label">Dashboard</span>
+                    <kbd class="nav-shortcut">1</kbd>
                 </a>
             </li>
             <li>
                 <a href="{{ url_for('main.models') }}" class="nav-item{% if request.path == '/models' %} active{% endif %}" id="nav-models">
                     <span class="nav-icon">◫</span>
                     <span class="nav-label">Models</span>
+                    <kbd class="nav-shortcut">2</kbd>
                 </a>
             </li>
             <li>
                 <a href="{{ url_for('main.alerts') }}" class="nav-item{% if request.path == '/alerts' %} active{% endif %}" id="nav-alerts">
                     <span class="nav-icon">⚠</span>
                     <span class="nav-label">Alerts</span>
+                    <kbd class="nav-shortcut">3</kbd>
                 </a>
             </li>
         </ul>
 
         <div class="sidebar-footer">
-            <div class="sidebar-version">v2.0.0</div>
+            <div class="sidebar-stats">
+                <div class="sidebar-stat">
+                    <span class="sidebar-stat-dot online"></span>
+                    <span>System Online</span>
+                </div>
+                <div class="sidebar-stat">
+                    <span class="sidebar-stat-label">Uptime</span>
+                    <span class="sidebar-stat-value" id="uptime-counter">00:00:00</span>
+                </div>
+            </div>
+            <div class="sidebar-version">v2.1.0 · <span class="shortcut-hint" id="shortcut-hint-btn">Press ? for shortcuts</span></div>
         </div>
     </nav>
 
@@ -48,13 +85,19 @@
         <header class="top-header">
             <div class="header-left">
                 <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle navigation">☰</button>
-                <h1 class="header-brand">NetShield <span class="header-brand-accent">IDS</span></h1>
+                <h1 class="header-brand"><span class="glitch" data-text="NetShield">NetShield</span> <span class="header-brand-accent">IDS</span></h1>
             </div>
             <div class="header-right">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
+                    <span class="theme-icon" id="theme-icon">🌙</span>
+                    <span class="theme-label" id="theme-label">Dark</span>
+                </button>
                 <div class="live-indicator" id="live-indicator">
+                    <span class="radar-ping"></span>
                     <span class="live-dot"></span>
                     <span class="live-text">LIVE</span>
                 </div>
+                <div class="header-clock" id="header-clock">00:00:00</div>
                 <div class="header-timestamp" id="header-timestamp"></div>
             </div>
         </header>
@@ -63,6 +106,33 @@
             {% block content %}{% endblock %}
         </main>
     </div>
+
+    <!-- System Status Bar -->
+    <footer class="status-bar" id="status-bar">
+        <div class="status-item">
+            <span class="status-dot online"></span>
+            <span>CONNECTED</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Packets/s:</span>
+            <span class="status-value" id="status-pps">0</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Threats:</span>
+            <span class="status-value status-danger" id="status-threats">0</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Models:</span>
+            <span class="status-value">RF · XGB</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Mode:</span>
+            <span class="status-value status-success">DEMO</span>
+        </div>
+        <div class="status-item status-right">
+            <span>NetShield IDS v2.1.0</span>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
