@@ -29,6 +29,9 @@
                 <div class="shortcut-item"><kbd>2</kbd><span>Models</span></div>
                 <div class="shortcut-item"><kbd>3</kbd><span>Alerts</span></div>
                 <div class="shortcut-item"><kbd>T</kbd><span>Toggle Theme</span></div>
+                <div class="shortcut-item"><kbd>F</kbd><span>Fullscreen</span></div>
+                <div class="shortcut-item"><kbd>E</kbd><span>Export CSV</span></div>
+                <div class="shortcut-item"><kbd>S</kbd><span>Toggle Sound</span></div>
                 <div class="shortcut-item"><kbd>?</kbd><span>Show Shortcuts</span></div>
                 <div class="shortcut-item"><kbd>Esc</kbd><span>Close Overlay</span></div>
             </div>
@@ -66,6 +69,19 @@
             </li>
         </ul>
 
+        <!-- Threat Level Gauge -->
+        <div class="sidebar-threat-gauge">
+            <div class="threat-gauge-header">THREAT LEVEL</div>
+            <div class="threat-gauge-bar">
+                <div class="threat-gauge-fill" id="threat-gauge-fill" style="width: 12%"></div>
+            </div>
+            <div class="threat-gauge-labels">
+                <span>LOW</span>
+                <span id="threat-gauge-pct">12%</span>
+                <span>CRITICAL</span>
+            </div>
+        </div>
+
         <div class="sidebar-footer">
             <div class="sidebar-stats">
                 <div class="sidebar-stat">
@@ -88,17 +104,31 @@
                 <h1 class="header-brand"><span class="glitch" data-text="NetShield">NetShield</span> <span class="header-brand-accent">IDS</span></h1>
             </div>
             <div class="header-right">
+                <!-- Sound Toggle -->
+                <button class="header-btn" id="sound-toggle" title="Toggle alert sounds">
+                    <span id="sound-icon">🔇</span>
+                </button>
+                <!-- Fullscreen -->
+                <button class="header-btn" id="fullscreen-toggle" title="Toggle fullscreen (F)">
+                    <span id="fullscreen-icon">⛶</span>
+                </button>
+                <!-- Export -->
+                <button class="header-btn" id="export-btn" title="Export alerts CSV (E)">
+                    <span>📥</span>
+                </button>
+                <!-- Theme -->
                 <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
                     <span class="theme-icon" id="theme-icon">🌙</span>
                     <span class="theme-label" id="theme-label">Dark</span>
                 </button>
+                <!-- Live Indicator -->
                 <div class="live-indicator" id="live-indicator">
                     <span class="radar-ping"></span>
                     <span class="live-dot"></span>
                     <span class="live-text">LIVE</span>
                 </div>
+                <!-- Single Clock -->
                 <div class="header-clock" id="header-clock">00:00:00</div>
-                <div class="header-timestamp" id="header-timestamp"></div>
             </div>
         </header>
 
@@ -124,6 +154,10 @@
         <div class="status-item">
             <span class="status-label">Models:</span>
             <span class="status-value">RF · XGB</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Sound:</span>
+            <span class="status-value" id="status-sound">OFF</span>
         </div>
         <div class="status-item">
             <span class="status-label">Mode:</span>

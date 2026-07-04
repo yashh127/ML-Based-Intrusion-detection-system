@@ -168,8 +168,7 @@ function initDashboard() {
 }
 
 function updateHeaderTimestamp() {
-    const el = document.getElementById('header-timestamp');
-    if (el) el.textContent = formatTimestamp(new Date());
+    /* Handled by the live clock now */
 }
 
 /* --- Attack Distribution Donut --- */
@@ -977,6 +976,18 @@ if (_origAddTrafficEntry) {
             case 'T':
                 document.getElementById('theme-toggle')?.click();
                 break;
+            case 'f':
+            case 'F':
+                toggleFullscreen();
+                break;
+            case 'e':
+            case 'E':
+                exportAlertsCSV();
+                break;
+            case 's':
+            case 'S':
+                toggleAlertSound();
+                break;
             case '?':
                 toggleShortcuts(true);
                 break;
@@ -1098,4 +1109,172 @@ if (_origAddTrafficEntry) {
     }
 
     setTimeout(typeChar, 300);
+})();
+
+/* =========================================================
+   Showcase Features v2.2
+   ========================================================= */
+
+/* --- Fullscreen Toggle --- */
+function toggleFullscreen() {
+    const btn = document.getElementById('fullscreen-toggle');
+    const icon = document.getElementById('fullscreen-icon');
+
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+            document.body.classList.add('fullscreen-mode');
+            if (icon) icon.textContent = '⛶';
+            showToast('Fullscreen', 'Press F or Esc to exit', 'info');
+        }).catch(() => {});
+    } else {
+        document.exitFullscreen().then(() => {
+            document.body.classList.remove('fullscreen-mode');
+            if (icon) icon.textContent = '⛶';
+        }).catch(() => {});
+    }
+}
+
+document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+        document.body.classList.remove('fullscreen-mode');
+    }
+});
+
+if (document.getElementById('fullscreen-toggle')) {
+    document.getElementById('fullscreen-toggle').addEventListener('click', toggleFullscreen);
+}
+
+/* --- Alert Sound Toggle --- */
+let alertSoundEnabled = false;
+let alertAudioCtx = null;
+
+function toggleAlertSound() {
+    alertSoundEnabled = !alertSoundEnabled;
+    const btn = document.getElementById('sound-toggle');
+    const icon = document.getElementById('sound-icon');
+    const statusSound = document.getElementById('status-sound');
+
+    if (btn) btn.classList.toggle('active', alertSoundEnabled);
+    if (icon) icon.textContent = alertSoundEnabled ? '🔊' : '🔇';
+    if (statusSound) {
+        statusSound.textContent = alertSoundEnabled ? 'ON' : 'OFF';
+        statusSound.classList.toggle('status-success', alertSoundEnabled);
+    }
+
+    showToast('Sound Alerts', alertSoundEnabled ? 'Alert sounds enabled' : 'Alert sounds disabled', 'info');
+}
+
+function playAlertBeep() {
+    if (!alertSoundEnabled) return;
+    try {
+        if (!alertAudioCtx) alertAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = alertAudioCtx.createOscillator();
+        const gain = alertAudioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(alertAudioCtx.destination);
+        osc.frequency.value = 880;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.15, alertAudioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, alertAudioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(alertAudioCtx.currentTime + 0.3);
+    } catch (e) { /* ignore audio errors */ }
+}
+
+if (document.getElementById('sound-toggle')) {
+    document.getElementById('sound-toggle').addEventListener('click', toggleAlertSound);
+}
+
+/* Patch triggerAttackToast to also play sound */
+const _origTriggerToast = window.triggerAttackToast;
+window.triggerAttackToast = function(data) {
+    if (_origTriggerToast) _origTriggerToast(data);
+    if (data.attack_type && data.attack_type !== 'Normal') {
+        playAlertBeep();
+    }
+};
+
+/* --- Export Alerts to CSV --- */
+function exportAlertsCSV() {
+    const rows = document.querySelectorAll('#alerts-table tbody tr, .traffic-entry');
+    if (rows.length === 0) {
+        showToast('Export', 'No alert data to export yet', 'warning');
+        return;
+    }
+
+    let csv = 'Timestamp,Source IP,Destination IP,Protocol,Attack Type,Confidence\n';
+
+    // Try to export from the stored traffic data
+    if (window._alertHistory && window._alertHistory.length > 0) {
+        window._alertHistory.forEach(d => {
+            csv += `${d.timestamp || ''},${d.src_ip || ''},${d.dst_ip || ''},${d.protocol || ''},${d.attack_type || ''},${d.confidence || ''}\n`;
+        });
+    } else {
+        // Fallback: scrape from DOM
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 5) {
+                const vals = Array.from(cells).map(c => c.textContent.trim());
+                csv += vals.join(',') + '\n';
+            }
+        });
+    }
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `netshield_alerts_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast('Export Complete', 'Alerts downloaded as CSV', 'success');
+}
+
+if (document.getElementById('export-btn')) {
+    document.getElementById('export-btn').addEventListener('click', exportAlertsCSV);
+}
+
+/* Store alert history for export */
+window._alertHistory = [];
+const _origHandleTraffic2 = window.handleNewTraffic;
+if (typeof _origHandleTraffic2 === 'function') {
+    window.handleNewTraffic = function(data) {
+        _origHandleTraffic2(data);
+        if (data.attack_type && data.attack_type !== 'Normal') {
+            window._alertHistory.push(data);
+            if (window._alertHistory.length > 500) window._alertHistory.shift();
+        }
+    };
+}
+
+/* --- Live Threat Gauge --- */
+(function initThreatGauge() {
+    let totalCount = 0;
+    let threatCount = 0;
+
+    const fill = document.getElementById('threat-gauge-fill');
+    const pct = document.getElementById('threat-gauge-pct');
+
+    setInterval(() => {
+        if (!fill || !pct) return;
+        // Use dashboard state if available
+        if (typeof dashboardState !== 'undefined') {
+            totalCount = dashboardState.totalConnections || 1;
+            threatCount = dashboardState.threatCount || 0;
+        }
+
+        const percent = totalCount > 0 ? Math.round((threatCount / totalCount) * 100) : 0;
+        fill.style.width = Math.min(percent, 100) + '%';
+        pct.textContent = percent + '%';
+
+        // Change shadow color based on severity
+        if (percent > 50) {
+            fill.style.boxShadow = '0 0 10px rgba(255, 51, 102, 0.5)';
+        } else if (percent > 25) {
+            fill.style.boxShadow = '0 0 10px rgba(255, 170, 0, 0.4)';
+        } else {
+            fill.style.boxShadow = '0 0 10px rgba(0, 255, 136, 0.3)';
+        }
+    }, 2000);
 })();
