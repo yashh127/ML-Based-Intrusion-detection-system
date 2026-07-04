@@ -1168,16 +1168,50 @@ function playAlertBeep() {
     if (!alertSoundEnabled) return;
     try {
         if (!alertAudioCtx) alertAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = alertAudioCtx.createOscillator();
-        const gain = alertAudioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(alertAudioCtx.destination);
-        osc.frequency.value = 880;
-        osc.type = 'sine';
-        gain.gain.setValueAtTime(0.15, alertAudioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, alertAudioCtx.currentTime + 0.3);
-        osc.start();
-        osc.stop(alertAudioCtx.currentTime + 0.3);
+        const ctx = alertAudioCtx;
+        const t = ctx.currentTime;
+
+        /* --- Cyberpunk 3-tone alert --- */
+
+        /* Tone 1: Rising sweep (sci-fi radar ping) */
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(400, t);
+        osc1.frequency.exponentialRampToValueAtTime(1200, t + 0.15);
+        gain1.gain.setValueAtTime(0.18, t);
+        gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+        osc1.start(t);
+        osc1.stop(t + 0.2);
+
+        /* Tone 2: Sharp staccato ping */
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.type = 'square';
+        osc2.frequency.value = 1800;
+        gain2.gain.setValueAtTime(0, t + 0.22);
+        gain2.gain.linearRampToValueAtTime(0.1, t + 0.23);
+        gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.33);
+        osc2.start(t + 0.22);
+        osc2.stop(t + 0.35);
+
+        /* Tone 3: Lower confirmation tone */
+        const osc3 = ctx.createOscillator();
+        const gain3 = ctx.createGain();
+        osc3.connect(gain3);
+        gain3.connect(ctx.destination);
+        osc3.type = 'triangle';
+        osc3.frequency.value = 600;
+        gain3.gain.setValueAtTime(0, t + 0.36);
+        gain3.gain.linearRampToValueAtTime(0.12, t + 0.37);
+        gain3.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+        osc3.start(t + 0.36);
+        osc3.stop(t + 0.55);
+
     } catch (e) { /* ignore audio errors */ }
 }
 
