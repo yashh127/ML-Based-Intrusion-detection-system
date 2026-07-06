@@ -134,11 +134,11 @@ Evaluated on the **NSL-KDD Test+** set (contains novel attack types not seen in 
 
 | Attack Type | Precision | Recall | F1 Score | Support |
 |:------------|:---------:|:------:|:--------:|:-------:|
-| ✅ Normal | 67.6% | 97.2% | 79.8% | 9,711 |
-| 🔴 DoS | 96.4% | 79.0% | 86.9% | 7,460 |
-| 🟡 Probe | 84.7% | 69.2% | 76.2% | 2,421 |
-| 🟣 R2L | 57.8% | 26.3% | 36.2% | 2,754 |
-| 🔵 U2R | 42.6% | 10.1% | 16.3% | 200 |
+|  Normal | 67.6% | 97.2% | 79.8% | 9,711 |
+|  DoS | 96.4% | 79.0% | 86.9% | 7,460 |
+|  Probe | 84.7% | 69.2% | 76.2% | 2,421 |
+|  R2L | 57.8% | 26.3% | 36.2% | 2,754 |
+|  U2R | 42.6% | 10.1% | 16.3% | 200 |
 
 > **Note:** Validation accuracy was 99.97%. Lower test accuracy is by design — NSL-KDD's test set contains **novel attack types** to test real-world generalization. These results are consistent with published benchmarks.
 
