@@ -60,9 +60,25 @@
             </svg>
         </div>
         <div class="stat-content">
-            <span class="stat-label">Best Model</span>
-            <span id="stat-model" class="stat-value">XGBoost</span>
-            <span class="stat-sub" id="stat-model-accuracy">98.3% accuracy</span>
+            <span class="stat-label">Active Model</span>
+            <span id="stat-model" class="stat-value" style="font-size: 1.4rem;">XGBoost</span>
+            <span class="stat-sub" id="stat-model-accuracy">98.3% accuracy · 1.2ms</span>
+        </div>
+    </article>
+
+    <article class="glass-card stat-card" id="card-mitre-tactic">
+        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                <line x1="6" y1="6" x2="6.01" y2="6"/>
+                <line x1="6" y1="18" x2="6.01" y2="18"/>
+            </svg>
+        </div>
+        <div class="stat-content">
+            <span class="stat-label">MITRE ATT&CK</span>
+            <span id="stat-mitre" class="stat-value" style="font-size: 1.2rem; color: #a78bfa;">T1498 (DoS)</span>
+            <span class="stat-sub">Automated Defense: Active</span>
         </div>
     </article>
 </section>
@@ -145,4 +161,107 @@
         </div>
     </article>
 </section>
+
+<!-- Next-Gen SOC Advanced Operations Grid -->
+<section class="advanced-ops-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 24px;">
+    
+    <!-- 1. Interactive Attack Injection Simulator -->
+    <article class="glass-card simulator-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">🧪 Attack Vector Injection Sandbox</h3>
+            <span class="badge badge-warning">Live Test</span>
+        </div>
+        <form id="attack-simulator-form" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 4px;">ATTACK CATEGORY</label>
+                    <select id="sim-attack-type" class="form-control" style="width: 100%; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem;">
+                        <option value="DoS">DoS (Denial of Service)</option>
+                        <option value="Probe">Probe (Port Recon Scan)</option>
+                        <option value="R2L">R2L (Unauthorized Access)</option>
+                        <option value="U2R">U2R (Root Privilege Escalation)</option>
+                        <option value="Normal">Normal Connection</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 4px;">TARGET SERVICE</label>
+                    <select id="sim-service" class="form-control" style="width: 100%; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem;">
+                        <option value="http">HTTP (Port 80)</option>
+                        <option value="ssh">SSH (Port 22)</option>
+                        <option value="ftp">FTP (Port 21)</option>
+                        <option value="smtp">SMTP (Port 25)</option>
+                        <option value="dns">DNS (Port 53)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 4px;">SOURCE IP (MALICIOUS)</label>
+                    <input type="text" id="sim-src-ip" placeholder="e.g. 185.220.101.5" value="185.220.101.5" style="width: 100%; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem;" />
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 4px;">PAYLOAD BYTES</label>
+                    <input type="number" id="sim-bytes" value="48200" style="width: 100%; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem;" />
+                </div>
+            </div>
+
+            <button type="submit" id="inject-attack-btn" style="margin-top: 4px; padding: 10px; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--accent-danger), #b91c1c); color: white; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; transition: transform 0.15s ease;">
+                🚀 Inject Simulated Threat Packet
+            </button>
+        </form>
+    </article>
+
+    <!-- 2. Active Firewall IP Quarantine -->
+    <article class="glass-card firewall-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">🛡️ Active Firewall & IP Quarantine</h3>
+            <span class="panel-badge" id="firewall-rule-count">0 Active Rules</span>
+        </div>
+        <div style="padding: 16px; max-height: 220px; overflow-y: auto;">
+            <div id="firewall-list" style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 20px;">
+                    No active firewall blocks. Click "🚫 Block IP" on any attack in the feed to quarantine.
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- 3. PCAP Capture Analyzer & Executive Report Generator -->
+    <article class="glass-card pcap-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">📁 PCAP Capture & Executive Audit</h3>
+        </div>
+        <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+            <!-- PCAP Upload Zone -->
+            <div id="pcap-dropzone" style="border: 2px dashed var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center; cursor: pointer; background: rgba(56, 189, 248, 0.03); transition: background 0.2s ease;">
+                <input type="file" id="pcap-file-input" accept=".pcap,.pcapng,.csv" style="display: none;" />
+                <span style="font-size: 1.4rem;">📦</span>
+                <p style="font-size: 0.85rem; font-weight: 500; margin-top: 4px; color: var(--text-primary);">Drop PCAP / CSV Network File</p>
+                <p style="font-size: 0.75rem; color: var(--text-muted);">or click to browse file for batch ML scan</p>
+            </div>
+
+            <!-- Report Export -->
+            <div style="display: flex; gap: 10px;">
+                <button id="btn-generate-audit" style="flex: 1; padding: 10px; border-radius: var(--radius-sm); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); font-weight: 600; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    📄 Generate SOC Audit PDF/JSON
+                </button>
+            </div>
+        </div>
+    </article>
+
+</section>
+
+<!-- XAI Explainable AI Inspector Modal -->
+<div id="xai-modal" class="shortcuts-overlay" style="display: none; align-items: center; justify-content: center;">
+    <div class="shortcuts-modal glass-card" style="max-width: 540px; width: 90%;">
+        <div class="shortcuts-header">
+            <h3 id="xai-title">🔍 Explainable AI (XAI) Model Decision Inspector</h3>
+            <button class="shortcuts-close" id="xai-close-btn">✕</button>
+        </div>
+        <div style="padding: 20px;" id="xai-body">
+            <!-- Dynamic XAI content -->
+        </div>
+    </div>
+</div>
 {% endblock %}
