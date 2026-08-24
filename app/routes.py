@@ -95,7 +95,11 @@ def generate_mock_sample() -> dict:
     return {
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "src_ip": generate_random_ip(private=True),
+        "src_lat": round(random.uniform(-60, 70), 4),
+        "src_lon": round(random.uniform(-180, 180), 4),
         "dst_ip": generate_random_ip(private=random.random() > 0.3),
+        "dst_lat": round(random.uniform(-60, 70), 4),
+        "dst_lon": round(random.uniform(-180, 180), 4),
         "protocol": random.choice(PROTOCOLS),
         "service": random.choice(SERVICES),
         "prediction": attack_type,
@@ -201,7 +205,11 @@ def api_demo_feed():
                     sample = {
                         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         "src_ip": generate_random_ip(private=True),
+                        "src_lat": round(random.uniform(-60, 70), 4),
+                        "src_lon": round(random.uniform(-180, 180), 4),
                         "dst_ip": generate_random_ip(private=random.random() > 0.3),
+                        "dst_lat": round(random.uniform(-60, 70), 4),
+                        "dst_lon": round(random.uniform(-180, 180), 4),
                         "protocol": random.choice(PROTOCOLS),
                         "service": random.choice(SERVICES),
                         "prediction": attack_type,

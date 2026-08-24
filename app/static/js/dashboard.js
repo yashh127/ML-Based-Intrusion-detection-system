@@ -1312,3 +1312,124 @@ if (typeof _origHandleTraffic2 === 'function') {
         }
     }, 2000);
 })();
+
+/* --- SOC Features: Map and Terminal --- */
+(function initSOCFeatures() {
+    const termContent = document.getElementById('terminal-content');
+    const termContainer = document.getElementById('terminal-container');
+    const canvas = document.getElementById('threatMapCanvas');
+    if (!canvas || !termContent) return;
+
+    let ctx = canvas.getContext('2d');
+    let arcs = [];
+
+    function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Mapping lat/lon to canvas coords
+    function getCoords(lat, lon) {
+        const x = (lon + 180) * (canvas.width / 360);
+        // Correctly orient Y axis (positive lat is UP, but canvas Y goes DOWN)
+        const y = canvas.height - ((lat + 90) * (canvas.height / 180));
+        return { x, y };
+    }
+
+    function drawArc(srcLat, srcLon, dstLat, dstLon, isAttack) {
+        const start = getCoords(srcLat, srcLon);
+        const end = getCoords(dstLat, dstLon);
+        arcs.push({
+            start, end,
+            isAttack,
+            progress: 0,
+            life: 1.0
+        });
+    }
+
+    function animateMap() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = arcs.length - 1; i >= 0; i--) {
+            const arc = arcs[i];
+            
+            ctx.beginPath();
+            ctx.moveTo(arc.start.x, arc.start.y);
+            
+            // Quadratic curve to make an arc
+            const midX = (arc.start.x + arc.end.x) / 2;
+            const midY = (arc.start.y + arc.end.y) / 2 - Math.abs(arc.start.x - arc.end.x) * 0.2; // curve height based on distance
+            
+            const currentX = arc.start.x + (arc.end.x - arc.start.x) * arc.progress;
+            const currentY = arc.start.y + (arc.end.y - arc.start.y) * arc.progress;
+            
+            // For simplicity, just draw straight lines while progressing, and curve when done
+            // Actually, bezier/quadratic curve drawing with progress requires complex math. 
+            // We'll just draw a straight line for the "laser" effect!
+            
+            ctx.lineTo(currentX, currentY);
+            
+            ctx.strokeStyle = arc.isAttack ? `rgba(255, 51, 102, ${arc.life})` : `rgba(0, 255, 136, ${arc.life * 0.5})`;
+            ctx.lineWidth = arc.isAttack ? 2 : 1;
+            ctx.stroke();
+
+            // Draw a ping at the end if finished
+            if (arc.progress >= 1) {
+                ctx.beginPath();
+                ctx.arc(arc.end.x, arc.end.y, (1 - arc.life) * 10, 0, Math.PI * 2);
+                ctx.strokeStyle = arc.isAttack ? `rgba(255, 51, 102, ${arc.life})` : `rgba(0, 255, 136, ${arc.life * 0.5})`;
+                ctx.stroke();
+            }
+
+            // Progress animation
+            if (arc.progress < 1) {
+                arc.progress += 0.05;
+            } else {
+                arc.life -= 0.02;
+            }
+
+            if (arc.life <= 0) {
+                arcs.splice(i, 1);
+            }
+        }
+        requestAnimationFrame(animateMap);
+    }
+    requestAnimationFrame(animateMap);
+
+    function updateTerminal(data) {
+        const line = document.createElement('div');
+        line.className = 'term-line term-prompt';
+        const isAttack = data.prediction !== 'Normal';
+        
+        line.classList.add(isAttack ? 'alert' : 'normal');
+        
+        const time = `<span class="term-timestamp">[${data.timestamp.split(' ')[1]}]</span>`;
+        const payload = `SRC:${data.src_ip} DST:${data.dst_ip} PROTO:${data.protocol} -> ${data.prediction} (conf: ${data.confidence})`;
+        
+        line.innerHTML = time + payload;
+        termContent.appendChild(line);
+        
+        // Auto scroll
+        termContainer.scrollTop = termContainer.scrollHeight;
+
+        // Keep terminal light
+        if (termContent.children.length > 50) {
+            termContent.removeChild(termContent.children[0]);
+        }
+    }
+
+    // Hook into handleNewTraffic
+    const _origHandleTraffic3 = window.handleNewTraffic;
+    if (typeof _origHandleTraffic3 === 'function') {
+        window.handleNewTraffic = function(data) {
+            _origHandleTraffic3(data);
+            const isAttack = data.prediction !== 'Normal' && data.attack_type !== 'Normal';
+            if (data.src_lat !== undefined) {
+                drawArc(data.src_lat, data.src_lon, data.dst_lat, data.dst_lon, isAttack);
+            }
+            updateTerminal(data);
+        };
+    }
+
+})();

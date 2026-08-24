@@ -66,6 +66,31 @@
         </div>
     </article>
 </section>
+<section class="map-section" aria-label="Global Threat Map">
+    <article class="glass-card map-panel" id="map-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">
+                <span class="live-dot small"></span>
+                Global Threat Map
+            </h3>
+        </div>
+        <div class="map-container" id="map-container">
+            <!-- SVG Map Background -->
+            <svg id="world-map-svg" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <path class="map-land" d="M152,86 c3,1 6,2 8,0 c2,-2 3,-6 1,-8 c-2,-2 -5,-3 -7,-1 c-2,2 -4,5 -2,7 M175,70 c2,-1 4,-3 3,-5 c-1,-2 -3,-3 -5,-1 c-2,2 -3,4 -2,6 M190,60 c3,-2 5,-5 3,-7 c-2,-2 -5,-3 -8,-1 c-3,2 -4,5 -2,7 M840,150 c-5,-10 -15,-20 -25,-25 c-10,-5 -25,-5 -35,-5 c-10,0 -20,5 -30,10 c-10,5 -20,15 -25,25 c-5,10 -10,25 -5,35 c5,10 15,20 25,25 c10,5 20,5 30,5 c10,0 20,-5 30,-10 c10,-5 20,-15 25,-25 c5,-10 10,-25 5,-35 M700,200 c-5,0 -10,5 -15,10 c-5,5 -10,15 -10,25 c0,10 5,20 15,25 c10,5 20,5 30,0 c10,-5 15,-15 15,-25 c0,-10 -5,-20 -15,-25 c-5,-5 -15,-10 -20,-10" fill="rgba(0, 212, 255, 0.1)" stroke="rgba(0, 212, 255, 0.3)" stroke-width="1"/>
+                <!-- We will add a simple procedural grid instead for the background to look like radar -->
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0, 212, 255, 0.05)" stroke-width="1"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+            <canvas id="threatMapCanvas"></canvas>
+            <div class="radar-sweep"></div>
+        </div>
+    </article>
+</section>
 
 <section class="monitor-grid" aria-label="Monitoring panels">
     <article class="glass-card traffic-panel" id="traffic-panel">
@@ -104,6 +129,19 @@
         </div>
         <div class="chart-container timeline-container">
             <canvas id="timelineChart"></canvas>
+        </div>
+    </article>
+    
+    <article class="glass-card terminal-panel" id="terminal-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">Raw JSON Intercept</h3>
+        </div>
+        <div class="terminal-container" id="terminal-container">
+            <div class="terminal-content" id="terminal-content">
+                <div class="term-line sys-msg">Initializing secure socket connection...</div>
+                <div class="term-line sys-msg">Connected to demo-feed on port 5050.</div>
+                <div class="term-line sys-msg">Waiting for packet interception...</div>
+            </div>
         </div>
     </article>
 </section>
