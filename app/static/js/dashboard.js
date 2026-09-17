@@ -3,16 +3,16 @@
    Chart.js configuration, SSE real-time feed, counters
    ========================================================= */
 
-/* --- Theme Settings (Light Mode Default) --- */
+/* --- Theme Settings (Nordic Frost & Titanium Default) --- */
 function initThemeToggle() {
-    const saved = localStorage.getItem('ids-theme') || 'light';
+    const saved = localStorage.getItem('ids-theme') || 'nordic';
     applyTheme(saved);
 
     const btn = document.getElementById('theme-toggle');
     if (btn) {
         btn.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme') || 'light';
-            const next = current === 'dark' ? 'light' : 'dark';
+            const current = document.documentElement.getAttribute('data-theme') || 'nordic';
+            const next = current === 'light' ? 'nordic' : 'light';
             applyTheme(next);
             localStorage.setItem('ids-theme', next);
         });
@@ -20,55 +20,59 @@ function initThemeToggle() {
 }
 
 function applyTheme(theme) {
-    if (theme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
+    if (theme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
     }
 
     const icon = document.getElementById('theme-icon');
     const label = document.getElementById('theme-label');
-    if (icon) icon.textContent = theme === 'dark' ? '🌙' : '☀️';
-    if (label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+    if (icon) icon.textContent = theme === 'light' ? '☀️' : '❄️';
+    if (label) label.textContent = theme === 'light' ? 'Light' : 'Nordic';
 
     /* Update Chart.js defaults for the theme */
     if (typeof Chart !== 'undefined') {
-        const textColor = theme === 'dark' ? '#9ca3af' : '#475569';
-        const gridColor = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+        const textColor = theme === 'light' ? '#4c566a' : '#d8dee9';
+        const gridColor = theme === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(236,239,244,0.06)';
         Chart.defaults.color = textColor;
         Chart.defaults.borderColor = gridColor;
     }
 }
 
-/* Apply light theme immediately */
+/* Apply theme immediately */
 (function() {
-    const saved = localStorage.getItem('ids-theme') || 'light';
-    document.documentElement.setAttribute('data-theme', saved);
+    const saved = localStorage.getItem('ids-theme');
+    if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
 })();
 
-/* --- Color Constants (Deep Charcoal & Electric Cobalt SOC) --- */
+/* --- Color Constants (Ultra-Sleek Dark Cyber Aesthetic) --- */
 const COLORS = {
-    cyan: '#58a6ff',
-    blue: '#1f6feb',
-    purple: '#bc8cff',
-    danger: '#ff7b72',
-    success: '#3fb950',
-    warning: '#d29922',
-    info: '#79c0ff',
-    textSecondary: '#8b949e',
-    textMuted: '#6e7681',
-    border: '#30363d',
-    gridLine: 'rgba(240, 246, 252, 0.05)',
+    cyan: '#00f0ff',        /* Laser Cyan */
+    blue: '#3b82f6',        /* Electric Blue */
+    purple: '#a855f7',      /* Neon Purple */
+    danger: '#ff3366',      /* Laser Coral Crimson */
+    success: '#00ff88',     /* Cyber Emerald */
+    warning: '#ffb800',     /* Neon Amber */
+    info: '#38bdf8',        /* Sky Cyan */
+    textSecondary: '#94a3b8',
+    textMuted: '#475569',
+    border: 'rgba(255, 255, 255, 0.08)',
+    gridLine: 'rgba(255, 255, 255, 0.04)',
     /* Model-specific colors */
-    rf: '#58a6ff',
-    xgb: '#bc8cff',
-    lstm: '#ff7b72',
-    /* Attack-type colors (NIST SOC Severity) */
-    Normal: '#3fb950',
-    DoS: '#ff7b72',
-    Probe: '#d29922',
-    R2L: '#bc8cff',
-    U2R: '#f78166',
+    rf: '#00f0ff',
+    xgb: '#a855f7',
+    lstm: '#ff3366',
+    /* Attack-type colors */
+    Normal: '#00ff88',
+    DoS: '#ff3366',
+    Probe: '#ffb800',
+    R2L: '#a855f7',
+    U2R: '#f43f5e',
 };
 
 /* --- Chart.js Global Defaults --- */

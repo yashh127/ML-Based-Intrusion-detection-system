@@ -1,64 +1,64 @@
 /* =========================================================
-   NetShield IDS — Premium Cybersecurity Dark Theme
+   NetShield IDS — Ultra-Sleek Dark Cyber Aesthetic
    ========================================================= */
 
-/* --- Design Tokens --- */
+/* --- Design Tokens: Sleek Obsidian & Electric Cyan --- */
 :root {
-    --bg-primary: #0d1117;
-    --bg-secondary: #161b22;
-    --bg-card: rgba(22, 27, 34, 0.88);
-    --bg-card-hover: rgba(33, 38, 45, 0.95);
-    --accent-cyan: #58a6ff;
-    --accent-blue: #1f6feb;
-    --accent-purple: #bc8cff;
-    --accent-danger: #ff7b72;
-    --accent-success: #3fb950;
-    --accent-warning: #d29922;
-    --accent-info: #79c0ff;
-    --text-primary: #f0f6fc;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
-    --border-color: #30363d;
-    --border-subtle: rgba(240, 246, 252, 0.1);
-    --glow-cyan: 0 0 14px rgba(88, 166, 255, 0.18);
-    --glow-danger: 0 0 14px rgba(255, 123, 114, 0.18);
-    --glow-success: 0 0 14px rgba(63, 185, 80, 0.18);
-    --glass-blur: blur(10px);
+    --bg-primary: #07090e;        /* Deepest Obsidian Void */
+    --bg-secondary: #0d111a;      /* Sleek Graphite */
+    --bg-card: rgba(13, 17, 26, 0.78);
+    --bg-card-hover: rgba(19, 26, 40, 0.90);
+    --accent-cyan: #00f0ff;       /* Laser Cyan */
+    --accent-blue: #3b82f6;       /* Electric Blue */
+    --accent-purple: #a855f7;     /* Neon Purple */
+    --accent-danger: #ff3366;     /* Laser Coral Crimson */
+    --accent-success: #00ff88;    /* Cyber Emerald */
+    --accent-warning: #ffb800;    /* Neon Amber */
+    --accent-info: #38bdf8;       /* Sky Cyan */
+    --text-primary: #f8fafc;      /* Pure Crystal White */
+    --text-secondary: #94a3b8;    /* Sleek Slate Gray */
+    --text-muted: #475569;        /* Deep Steel Gray */
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-subtle: rgba(255, 255, 255, 0.04);
+    --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.15);
+    --glow-danger: 0 0 20px rgba(255, 51, 102, 0.20);
+    --glow-success: 0 0 20px rgba(0, 255, 136, 0.15);
+    --glass-blur: blur(16px);
     --transition-fast: 0.15s ease;
     --transition: 0.25s ease;
     --transition-slow: 0.4s ease;
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 14px;
-    --radius-xl: 16px;
+    --radius-xl: 18px;
     --sidebar-width: 250px;
     --header-height: 60px;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 }
 
-/* --- Clean Titanium Light Alternative --- */
+/* --- Optional Alternative --- */
 [data-theme="light"] {
-    --bg-primary: #f6f8fa;
-    --bg-secondary: #ffffff;
-    --bg-card: rgba(255, 255, 255, 0.95);
-    --bg-card-hover: rgba(243, 244, 246, 0.95);
-    --accent-cyan: #0969da;
-    --accent-blue: #0550ae;
-    --accent-purple: #8250df;
-    --accent-danger: #cf222e;
-    --accent-success: #1a7f37;
-    --accent-warning: #9a6700;
-    --accent-info: #218bff;
-    --text-primary: #1f2328;
-    --text-secondary: #656d76;
-    --text-muted: #8c959f;
-    --border-color: #d0d7de;
-    --border-subtle: rgba(31, 35, 40, 0.08);
-    --glow-cyan: 0 0 10px rgba(9, 105, 218, 0.08);
-    --glow-danger: 0 0 10px rgba(207, 34, 46, 0.08);
-    --glow-success: 0 0 10px rgba(26, 127, 55, 0.08);
-    --glass-blur: blur(6px);
+    --bg-primary: #07090e;
+    --bg-secondary: #0d111a;
+    --bg-card: rgba(13, 17, 26, 0.78);
+    --bg-card-hover: rgba(19, 26, 40, 0.90);
+    --accent-cyan: #00f0ff;
+    --accent-blue: #3b82f6;
+    --accent-purple: #a855f7;
+    --accent-danger: #ff3366;
+    --accent-success: #00ff88;
+    --accent-warning: #ffb800;
+    --accent-info: #38bdf8;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-subtle: rgba(255, 255, 255, 0.04);
+    --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.15);
+    --glow-danger: 0 0 20px rgba(255, 51, 102, 0.20);
+    --glow-success: 0 0 20px rgba(0, 255, 136, 0.15);
+    --glass-blur: blur(16px);
 }
 
 /* --- Theme Toggle Button --- */
@@ -192,7 +192,7 @@ ul {
     top: 0;
     bottom: 0;
     width: var(--sidebar-width);
-    background: rgba(15, 20, 50, 0.85);
+    background: rgba(13, 17, 26, 0.90);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border-right: 1px solid var(--border-color);
@@ -212,13 +212,13 @@ ul {
 
 .brand-icon {
     font-size: 28px;
-    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.4));
+    filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
 }
 
 .brand-text {
     font-size: 1.3rem;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+    background: linear-gradient(135deg, #00f0ff, #a855f7);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -797,33 +797,33 @@ ul {
 }
 
 .badge-normal {
-    background: rgba(63, 185, 80, 0.15);
+    background: rgba(163, 190, 140, 0.16);
     color: var(--accent-success);
-    border: 1px solid rgba(63, 185, 80, 0.3);
+    border: 1px solid rgba(163, 190, 140, 0.35);
 }
 
 .badge-dos, .badge-DoS {
-    background: rgba(255, 123, 114, 0.15);
+    background: rgba(191, 97, 106, 0.16);
     color: var(--accent-danger);
-    border: 1px solid rgba(255, 123, 114, 0.3);
+    border: 1px solid rgba(191, 97, 106, 0.35);
 }
 
 .badge-probe, .badge-Probe {
-    background: rgba(210, 153, 34, 0.15);
+    background: rgba(235, 203, 139, 0.16);
     color: var(--accent-warning);
-    border: 1px solid rgba(210, 153, 34, 0.3);
+    border: 1px solid rgba(235, 203, 139, 0.35);
 }
 
 .badge-r2l, .badge-R2L {
-    background: rgba(188, 140, 255, 0.15);
+    background: rgba(180, 142, 173, 0.16);
     color: var(--accent-purple);
-    border: 1px solid rgba(188, 140, 255, 0.3);
+    border: 1px solid rgba(180, 142, 173, 0.35);
 }
 
 .badge-u2r, .badge-U2R {
-    background: rgba(247, 129, 102, 0.15);
-    color: #f78166;
-    border: 1px solid rgba(247, 129, 102, 0.3);
+    background: rgba(208, 135, 112, 0.16);
+    color: #d08770;
+    border: 1px solid rgba(208, 135, 112, 0.35);
 }
 
 /* =========================================================
